@@ -4,6 +4,7 @@ project(posMapping)
 ADD_COMPILE_OPTIONS(-std=c++14 )
 set( CMAKE_CXX_FLAGS "-std=c++14 -O3" )
 
+# set(CMAKE_BUILD_TYPE "Debug")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fexceptions" )
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -34,26 +35,26 @@ if(YAMLCPP_STATIC_LIBRARY)
     set(YAMLCPP_STATIC libyaml-cpp.a)
 endif()
 
-# find_package(OpenMP QUIET)
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-# set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}   ${OpenMP_C_FLAGS}")
+find_package(OpenMP QUIET)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}   ${OpenMP_C_FLAGS}")
 
 
 find_package(yaml-cpp REQUIRED)
 find_package(Eigen3 REQUIRED)
-# find_package(PCL 1.8 REQUIRED)
+find_package(PCL 1.8 REQUIRED)
 
 
 # 添加禾赛激光雷达的驱动
-# add_subdirectory(library/HesaiLidar_General_SDK)
+add_subdirectory(library/HesaiLidar_General_SDK)
 
 # 添加多模后处理软件库
 link_directories(library/navBoxPos)
 
 include_directories(
   ${YAML_CPP_INCLUDE_DIR}
-	# library/HesaiLidar_General_SDK/include  # hesai driver
-	# library/HesaiLidar_General_SDK/src/PandarGeneralRaw/include
+	library/HesaiLidar_General_SDK/include  # hesai driver
+	library/HesaiLidar_General_SDK/src/PandarGeneralRaw/include
   library/navBoxDriver                    # navbox driver
   library/navBoxPos                       # navbox pos
   ${EIGEN3_INCLUDE_DIR}                   # lio&mapping
@@ -64,15 +65,15 @@ include_directories(
 add_executable(posMapping 
   src/main.cpp
   library/navBoxDriver/data_translation.cpp 
-  # src/slam_manager.cpp
-  # src/imu_process.cpp
-  # src/navbox_lio.cpp
-  # include/ikd-Tree/ikd_Tree.cpp 
+  src/slam_manager.cpp
+  src/imu_process.cpp
+  src/navbox_lio.cpp
+  include/ikd-Tree/ikd_Tree.cpp 
 )
 
 target_link_libraries(posMapping 
   yaml-cpp
-  # ${PCL_LIBRARIES}
-  # PandarGeneralSDK
+  ${PCL_LIBRARIES}
+  PandarGeneralSDK
   navboxPos
 )

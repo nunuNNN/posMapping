@@ -13,16 +13,20 @@ void (*imuCallback)(const imuStr& imu_str);
 void (*odomCallback)(const odomStr& odom_str);
 void (*gnssCallback)(const gnssStr& gnss_str);
 
-dataTranslation::dataTranslation(const std::string &dat_path,
-                      void (*iCb)(const imuStr& imu_str),
-                      void (*oCb)(const odomStr& odom_str),
-                      void (*gCb)(const gnssStr& gnss_str))
-{
+dataTranslation::dataTranslation(const std::string& dat_path,
+                                 void (*iCb)(const imuStr& imu_str),
+                                 void (*oCb)(const odomStr& odom_str),
+                                 void (*gCb)(const gnssStr& gnss_str)) {
   datPath = dat_path;
 
-  imuCallback = iCb; odomCallback = oCb; gnssCallback = gCb;
+  imuCallback = iCb;
+  odomCallback = oCb;
+  gnssCallback = gCb;
 
-  g_timeStatus = 0; g_GpsweekNum = 0; g_GpsMsCnt = 0; g_running_ms = 0;
+  g_timeStatus = 0;
+  g_GpsweekNum = 0;
+  g_GpsMsCnt = 0;
+  g_running_ms = 0;
 
   _gnss_pos_time_ms_psd = 0;
   _gnss_vel_time_ms_psd = 0;
@@ -313,9 +317,8 @@ void dataTranslation::RcvOdomFrame(u1* pBuff, u2 len) {
   return;
 }
 
-void dataTranslation::runDataTrans()
-{
-  // load data file 
+void dataTranslation::runDataTrans() {
+  // load data file
   FILE* fp = fopen(datPath.c_str(), "rb");
   if ((fp) == NULL) {
     perror("fail to read");
@@ -327,7 +330,8 @@ void dataTranslation::runDataTrans()
   odomStr odom_str;
   gnssStr gnss_str;
 
-  f4 coeff = 0.85; f4 last_vel = 0.0;
+  f4 coeff = 0.85;
+  f4 last_vel = 0.0;
 
   u1 ch;
   while (!feof(fp)) {
@@ -396,8 +400,8 @@ void dataTranslation::runDataTrans()
       double sinL = sin(gnss_str.longitude);
 
       float Alpha =
-          1 + (bestposa.altitude /
-               sqrt(fabs(ae * ae * cosB * cosB + ap * ap * sinB * sinB)));
+          1 + (bestposa.altitude / sqrt(fabs(myAE * myAE * cosB * cosB +
+                                             myAP * myAP * sinB * sinB)));
 
       double Ve = (1 / Alpha) * (-sinL * bestxyza.v_x + cosL * bestxyza.v_y);
       double Vn =

@@ -4,8 +4,8 @@
 #define kGRAVITY 9.80665            // g
 #define kDEG2RAD 0.017453292519943  // deg -> rad
 #define kPI 3.141592653589793       // pi
-#define ae 6378137
-#define ap 6356755
+#define myAE 6378137
+#define myAP 6356755
 
 // sol type
 #define SOL_COMPUTED 0      // 已解出
